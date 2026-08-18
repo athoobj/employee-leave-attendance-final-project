@@ -4,11 +4,31 @@
 
 This project is the Angular front end for the **Employee Leave and Attendance System** developed as part of the COOP Training Final Project.
 
-The Angular application connects to the existing Spring Boot REST API and provides a complete user interface for authentication, role-based access, CRUD operations, leave request workflow, attendance operations, search, filtering, sorting, pagination, validation, and dashboard reporting.
+The Angular application connects to the existing Spring Boot REST API and provides a complete user interface for:
 
-The application uses the existing Spring Boot backend and the existing project entities. No mock services, static arrays, or hardcoded application data are used instead of API calls.
+- Authentication
+- Role-based access
+- Leave Request CRUD operations
+- Leave Request workflow
+- Attendance operations
+- Employees
+- Leave Types
+- Search
+- Filtering
+- Sorting
+- Pagination
+- Reactive Forms
+- Validation
+- Error handling
+- Dashboard summaries
+- Dashboard reports
+- Responsive user interface
 
-All application data is loaded from the Spring Boot backend using Angular `HttpClient` services.
+The Angular application uses the same topic, entities, business rules, and backend developed in the Spring Boot COOP Final Project.
+
+No mock services, static arrays, or replacement backend are used for application data.
+
+All application data is loaded from the Spring Boot REST API using Angular `HttpClient` services.
 
 ---
 
@@ -16,7 +36,7 @@ All application data is loaded from the Spring Boot backend using Angular `HttpC
 
 **Employee Leave and Attendance System**
 
-## Main Module
+## Main List Module
 
 - Leave Requests
 
@@ -26,7 +46,9 @@ All application data is loaded from the Spring Boot backend using Angular `HttpC
 - Employees
 - Leave Types
 
-## Main Leave Request Workflow
+## Leave Request Workflow
+
+The application operates the real Leave Request workflow implemented by the backend:
 
 - Submit Leave Request
 - Approve Leave Request
@@ -35,9 +57,13 @@ All application data is loaded from the Spring Boot backend using Angular `HttpC
 
 ## Attendance Workflow
 
+The application also supports the attendance operations required for the assigned topic:
+
 - Check In
 - Check Out
-- Mark Absent
+- Mark Absent for permitted privileged users
+
+The exact workflow statuses and role names used by the Angular application match the values implemented in the Spring Boot backend.
 
 ---
 
@@ -50,9 +76,9 @@ All application data is loaded from the Spring Boot backend using Angular `HttpC
 - HTML
 - CSS
 - Bootstrap
-- Angular Reactive Forms
 - Angular Router
-- HttpClient
+- Angular Reactive Forms
+- Angular HttpClient
 - RxJS
 
 ## Back End
@@ -84,44 +110,38 @@ Angular Service (HttpClient)
         ↓
 Spring Boot REST Controller
         ↓
-Service Layer
+Spring Boot Service Layer
         ↓
-Repository
+Spring Data Repository
         ↓
-MySQL (Podman)
+MySQL
 ```
 
 Angular components do not call `HttpClient` directly.
 
-All backend communication is performed through Angular services.
+All REST API communication is handled through Angular services.
+
+Business rules, authorization, workflow rules, and database validation remain in the Spring Boot backend.
 
 ---
 
-# Project Structure
+# Project Repositories
 
-The final project contains:
+## Final Project Repository
 
 ```text
-Employee Leave and Attendance Final Project
-│
-├── employee-leave-attendance-system - Copy.zip
-├── leave-attendance-ui - Copy.zip
-└── README.md
+https://github.com/athoobj/employee-leave-attendance-final-project
 ```
 
-The Angular front end is clearly separated from the Spring Boot backend.
+## Spring Boot Backend Repository
 
----
-
-# Spring Boot Backend Repository
-
-Original Spring Boot backend repository:
-
+```text
 https://github.com/athoobj/employee-leave-attendance-system.git
+```
 
-The Angular application uses this existing Spring Boot backend.
+The Angular application uses the existing Spring Boot backend.
 
-The Spring Boot application and MySQL database must be running before the Angular front end is started.
+The backend and MySQL database must be running before the Angular application is used.
 
 ---
 
@@ -129,42 +149,65 @@ The Spring Boot application and MySQL database must be running before the Angula
 
 The backend runs using two separate Podman containers:
 
-1. Spring Boot application container
-2. MySQL database container
+1. MySQL database container
+2. Spring Boot application container
 
-Both containers run on the same Podman network.
+Both containers must run on the same Podman network.
 
-The Spring Boot API is available at:
+The Spring Boot backend is exposed to the host on:
 
 ```text
 http://localhost:8081
 ```
 
-Before starting the Angular application, make sure that:
-
-- Podman is running.
-- The MySQL container is running.
-- The Spring Boot application container is running.
-- Both containers are connected to the same Podman network.
-- Port `8081` is reachable from the host.
-- The Spring Boot application can connect to MySQL.
-- CORS allows requests from the Angular development server.
-
-The backend must allow the Angular development server origin:
+The Angular development server runs on:
 
 ```text
 http://localhost:4200
 ```
 
-## Check Running Containers
+The Spring Boot backend must allow CORS requests from:
 
-The running containers can be checked using:
+```text
+http://localhost:4200
+```
+
+---
+
+# Starting the Backend Containers
+
+First, make sure Podman is running.
+
+To view the available containers:
+
+```bash
+podman ps -a
+```
+
+Start the existing MySQL and Spring Boot containers using their configured container names:
+
+```bash
+podman start <mysql-container-name>
+podman start <spring-boot-container-name>
+```
+
+Then verify that both containers are running:
 
 ```bash
 podman ps
 ```
 
-The Spring Boot and MySQL containers must both appear as running.
+Both the MySQL container and the Spring Boot application container should appear in the running container list.
+
+They must be connected to the same Podman network.
+
+> The exact container names depend on the existing Spring Boot backend configuration.
+
+After the containers are running, verify that the backend is reachable on:
+
+```text
+http://localhost:8081
+```
 
 ---
 
@@ -172,13 +215,13 @@ The Spring Boot and MySQL containers must both appear as running.
 
 ## 1. Requirements
 
-Before running the front end, install:
+Before running the Angular application, make sure the following are available:
 
 - Node.js
 - npm
 - Angular CLI
-
-The Spring Boot backend and MySQL database must also already be running.
+- Running Spring Boot backend
+- Running MySQL database
 
 ---
 
@@ -190,9 +233,11 @@ Open a terminal inside the Angular project folder and run:
 npm install
 ```
 
+The `node_modules` directory is generated locally and is not included in the submitted repository.
+
 ---
 
-## 3. Start the Angular Development Server
+## 3. Start Angular
 
 Run:
 
@@ -200,7 +245,7 @@ Run:
 ng serve
 ```
 
-The Angular application will be available at:
+Open the application in a browser:
 
 ```text
 http://localhost:4200
@@ -210,15 +255,21 @@ http://localhost:4200
 
 ## 4. Production Build
 
-Before final submission, run:
+To verify the production build, run:
 
 ```bash
 ng build
 ```
 
-The production build must complete without compilation errors.
+The final checked version successfully completes the Angular production build without compilation errors.
 
-The generated production files are created inside the Angular `dist` directory.
+The generated production output is created inside:
+
+```text
+dist/
+```
+
+A bundle budget warning may appear, but it does not prevent the application from compiling successfully.
 
 ---
 
@@ -248,33 +299,37 @@ Angular services use:
 environment.apiBaseUrl
 ```
 
-to communicate with the Spring Boot REST API.
+to access the Spring Boot REST API.
 
 ---
 
 # TypeScript Models
 
-The Angular application uses typed TypeScript models matching the backend data.
+The Angular application uses typed TypeScript interfaces/types for backend entities, request payloads, and API responses.
 
-Models are used for application entities and API responses.
-
-The project includes typed models for data such as:
+Models include:
 
 - Employee
 - Leave Request
+- Leave Request Create
+- Leave Request Update
 - Leave Type
 - Attendance
 - Login Request
 - Login Response
-- Dashboard summaries
-- Reports
-- Paged responses
+- System Summary
+- Personal Summary
+- Leave Status Report
+- Attendance by Employee Report
+- Generic paged response
 
-Separate request models are used where create or update payloads differ from the returned response.
+A generic page type is used for paginated API responses.
 
-The application also defines the leave request workflow status values.
+Leave Request workflow statuses are represented using typed status values.
 
-The application does not rely on `any` as the application data model.
+Separate create/update request types are used where request payloads differ from response objects.
+
+Application data is typed instead of using `any` as the main data model.
 
 ---
 
@@ -282,116 +337,157 @@ The application does not rely on `any` as the application data model.
 
 Authentication is validated against the Spring Boot backend and database.
 
-The login page sends the username and password to the backend authentication endpoint.
+The Login page sends the entered username and password to the backend authentication endpoint.
 
-After successful authentication, the application stores the authenticated user's information and role through `AuthService`.
+After successful authentication, `AuthService` keeps the authenticated user information.
 
 Authentication functionality includes:
 
-- Backend login validation
+- Backend-validated login
 - Authentication state
 - Username storage
 - Role storage
+- Employee ID where applicable
 - Session persistence after browser refresh
 - Logout
-- Route protection
-- Role-based access
+- Authenticated route protection
+- Role-based route protection
 - Authorization header through the HTTP interceptor
 
-A failed login displays the message returned by the backend API.
+A failed authentication request displays the error returned by the backend.
 
 ---
 
 # Demo Users
 
-The following demo accounts can be used to test the application:
+The following demo accounts are configured in the backend and can be used to demonstrate role-based functionality:
 
 | Username | Password | Role | Access |
 |---|---|---|---|
-| `admin` | `admin123` | ADMIN | Full administrative access |
-| `hr` | `hr123` | HR | HR and leave/attendance management |
-| `employee` | `employee123` | EMPLOYEE | Personal leave and attendance operations |
+| `admin` | `admin123` | `ADMIN` | Full privileged and administrative access |
+| `hr` | `hr123` | `HR` | HR, employee, leave, attendance, workflow and reporting functionality |
+| `employee` | `employee123` | `EMPLOYEE` | Personal leave, attendance and dashboard functionality |
+
+These users are authenticated against the Spring Boot backend/database.
 
 ---
 
 # Role-Based Access
 
-The application uses role-based access to control routes, navigation links, buttons, and available actions.
+The application uses the actual role names implemented by the Spring Boot backend:
 
-The Spring Boot backend remains responsible for the actual authorization and security rules.
+```text
+ADMIN
+HR
+EMPLOYEE
+```
+
+The backend remains the final authority for security and authorization.
 
 ## ADMIN
 
-ADMIN can:
+ADMIN has privileged access and can perform permitted administrative functionality such as:
 
-- Access the full dashboard
-- View system summaries
+- View the full system dashboard
 - View reports
 - View employees
 - Manage employees
 - View leave types
 - Manage leave types
-- View all leave requests
-- Create leave requests when permitted
-- Edit leave requests when permitted
-- Perform workflow management actions
+- View all Leave Requests
+- Create and edit permitted Leave Requests
+- Perform permitted workflow operations
 - View attendance records
+- Perform privileged attendance operations
 - Mark employees absent
 - Perform permitted delete operations
-- Access administrative functionality
 
 ---
 
 ## HR
 
-HR can:
+HR can perform the permitted HR functionality defined by the backend, including:
 
-- Access the full dashboard
-- View system summaries
+- View the full dashboard
 - View reports
 - View employees
-- Manage employees
+- Manage permitted employee functionality
 - View leave types
-- Manage leave types
-- View all leave requests
-- Create and edit permitted leave requests
-- Approve leave requests
-- Reject leave requests
+- Manage permitted leave type functionality
+- View all Leave Requests
+- Create and edit permitted Leave Requests
+- Approve Leave Requests
+- Reject Leave Requests
 - View attendance records
 - Mark employees absent
-- Perform HR management operations permitted by the backend
+
+Exact authorization remains enforced by the Spring Boot backend.
 
 ---
 
 ## EMPLOYEE
 
-EMPLOYEE can:
+EMPLOYEE users can access permitted personal functionality such as:
 
-- Access the personal dashboard
-- View personal leave requests
-- Submit a leave request for their own employee account
-- View leave request details
-- Cancel permitted leave requests
+- View the personal dashboard
+- View personal Leave Requests
+- Submit a Leave Request for their own employee account
+- View Leave Request details
+- Cancel permitted Leave Requests
 - View personal attendance records
-- Check in
-- Check out
-- View available leave types
+- Check In
+- Check Out
+- View available Leave Types
 
-Standard employees see only the personal records permitted by the backend.
+Personal-data ownership is enforced by the backend.
 
 ---
 
-# Header
+# Application Structure
 
-The application header displays:
+The Angular application contains the following major components/pages:
 
-- Application navigation
-- Login status
+- App
+- Header
+- Login
+- Dashboard
+- Leave Requests List
+- Leave Request Detail
+- Leave Request Form
+- Leave Request Workflow
+- Attendance
+- Employees
+- Leave Types
+- Search
+- Filter Menu
+- Access Denied
+- Page Not Found
+
+The application contains one complete main CRUD module and multiple supporting modules.
+
+---
+
+# Header and Navigation
+
+The shared Header displays the application title and navigation links.
+
+Available navigation links include:
+
+- Dashboard
+- Leave Requests
+- Attendance
+- Leave Types
+- Employees for privileged users
+
+For authenticated users, the Header also displays:
+
 - Current username
-- Current user role
+- Current role
 - Logout button
 
-Navigation options are displayed according to the authenticated user's permissions.
+The Header is only displayed when the user is authenticated.
+
+Navigation options that are not available to the current role are hidden where appropriate.
 
 ---
 
@@ -402,22 +498,22 @@ Navigation options are displayed according to the authenticated user's permissio
 | `/` | Redirect to Dashboard | Redirect |
 | `/login` | Login | Public |
 | `/dashboard` | Dashboard | Auth Guard |
-| `/leave-requests` | Leave Requests List | Auth Guard |
+| `/leave-requests` | Leave Requests | Auth Guard |
 | `/leave-requests/search/:keyword` | Leave Requests Search | Auth Guard |
 | `/leave-requests/filter/:value` | Leave Requests Filter | Auth Guard |
 | `/leave-requests/detail/:id` | Leave Request Detail | Auth Guard |
 | `/leave-requests/add` | Leave Request Form | Auth Guard |
-| `/leave-requests/edit/:id` | Leave Request Form | Auth Guard + Role Guard |
+| `/leave-requests/edit/:id` | Leave Request Form | Auth Guard + Role Guard (`HR`, `ADMIN`) |
 | `/leave-requests/:id/workflow` | Leave Request Workflow | Auth Guard |
 | `/attendance` | Attendance | Auth Guard |
-| `/employees` | Employees | Auth Guard + Role Guard |
+| `/employees` | Employees | Auth Guard + Role Guard (`HR`, `ADMIN`) |
 | `/leave-types` | Leave Types | Auth Guard |
 | `/access-denied` | Access Denied | Public |
-| `**` | Page Not Found | Wildcard |
+| `**` | Page Not Found | Wildcard route |
 
 The wildcard route is placed last.
 
-Navigation uses Angular Router and `routerLink`.
+Angular Router and `routerLink` are used for navigation.
 
 Route parameters are read using `ActivatedRoute`.
 
@@ -429,7 +525,7 @@ Route parameters are read using `ActivatedRoute`.
 
 The Auth Guard checks whether the user is authenticated.
 
-If the user is not logged in, the application redirects to:
+If the user is not logged in, the route redirects to:
 
 ```text
 /login
@@ -439,86 +535,141 @@ If the user is not logged in, the application redirects to:
 
 ## Role Guard
 
-The Role Guard checks whether the authenticated user's role is permitted to access the requested route.
+The Role Guard reads the roles configured in route data.
 
-If the user is logged in but does not have the required permission, the application redirects to:
+If the current role is allowed, navigation continues.
+
+If an authenticated user does not have the required role, the application redirects to:
 
 ```text
 /access-denied
 ```
 
-Buttons and navigation links that the current user cannot use are also hidden.
+The front end also hides actions that are not available to the current role.
 
-Front-end guards and hidden buttons are used for the user interface only.
-
-The Spring Boot backend remains responsible for enforcing authorization.
+The Spring Boot backend still enforces the actual authorization rules.
 
 ---
 
-# Implemented Modules
+# Main Module - Leave Requests
 
-The application contains the required main module and additional supporting modules.
+Leave Requests is the main CRUD module.
 
-## 1. Leave Requests
-
-Leave Requests is the main module of the application.
+The Leave Requests page loads its data from the real Spring Boot API.
 
 Implemented functionality includes:
 
-- Display leave requests
-- Load records from the backend
-- View leave request details
-- Create leave requests
-- Update leave requests
-- Delete leave requests according to permissions
-- Search leave requests
-- Filter leave requests
-- Filter by status
-- Filter by employee for privileged users
-- Sort records
+- Display Leave Requests
+- Paged backend results
+- View Leave Request details
+- Create Leave Requests
+- Update Leave Requests
+- Delete Leave Requests according to permissions
+- Keyword search
+- Status filter
+- Employee filter for privileged users
+- Sorting
 - Pagination
 - Page size selection
-- Display total record count
-- Display current page information
+- Total record count
+- Current page information
 - Status badges
-- Empty result messages
+- Empty result message
 - Workflow operations
-- Reactive form validation
-- Backend validation messages
-- Role-based actions
+- Role-based buttons/actions
+- Loading states
+- Backend error messages
+
+---
+
+# Leave Request Main List
+
+The Leave Requests list uses the paged response returned by the backend.
+
+The page displays:
+
+- Records
+- Current page
+- Total pages
+- Total records
+- Page size
+
+Available page sizes:
+
+```text
+5
+10
+20
+```
+
+The page supports sorting on multiple columns, including:
+
+- ID
+- Start Date
+- End Date
+
+Sorting direction can switch between:
+
+```text
+ASC
+DESC
+```
+
+The page supports:
+
+- Keyword search
+- Status filtering
+- Employee filtering for privileged users
+
+The current page resets when appropriate after a new search, filter, or page-size selection.
+
+When no records match the search/filter criteria, the application displays an empty-state message.
+
+Leave Request statuses are displayed as coloured badges using class binding.
 
 ---
 
 # Leave Request Detail Page
 
-The Leave Request Detail page loads a single leave request using its route ID.
+The detail page loads one Leave Request using the route ID.
 
-It displays the request information and related data.
+It displays the Leave Request information together with related domain data such as:
 
-The page provides actions according to the current user's role and the current request status.
+- Employee
+- Leave Type
+- Dates
+- Reason
+- Status
 
-Available actions can include:
+Actions are displayed according to the authenticated role.
+
+Possible actions include:
 
 - Edit
 - Workflow
 - Delete
 
-The page also provides a Back to List navigation option.
+The detail page also includes navigation back to the Leave Requests list.
 
 ---
 
-# Leave Request Form
+# Leave Request Create and Update Form
 
-The Leave Request form uses Angular Reactive Forms.
+The Leave Request form uses **Angular Reactive Forms**.
 
-The same form component is used for:
+The same component is used for:
 
 - Create
 - Update
 
-In edit mode, the existing record is loaded from the backend and its values are inserted into the form.
+In edit mode:
 
-The form contains fields such as:
+1. The request ID is read from the route.
+2. The existing request is loaded from the backend.
+3. Existing values are inserted into the form.
+4. The updated request is sent to the backend when submitted.
+
+The form contains:
 
 - Employee
 - Leave Type
@@ -526,37 +677,40 @@ The form contains fields such as:
 - End Date
 - Reason
 
-Drop-down values are loaded dynamically from the backend.
+Employee and Leave Type options are loaded dynamically from backend services.
 
-Leave types are not hardcoded inside the Angular component.
+Values are not replaced with static mock arrays.
 
 ---
 
-# Reactive Form Validation
+# Form Validation
 
-The Leave Request form contains front-end validation matching the domain requirements.
+The Leave Request form contains front-end validation aligned with the backend/domain rules.
 
 Validation includes:
 
-- Required fields
-- White-space validation where required
-- Maximum reason length
-- Date validation
+- Required Employee
+- Required Leave Type
+- Required Start Date
+- Required End Date
+- Maximum Reason length
 - Date range validation
 - Backend validation errors
 
-A custom cross-field validator verifies that:
+A custom cross-field validator verifies:
 
 ```text
 End Date >= Start Date
 ```
 
-Validation messages are displayed to the user.
+Validation messages are displayed near the corresponding fields.
 
 The submit button remains disabled while:
 
 - The form is invalid
-- A request is being submitted
+- A submission is already in progress
+
+Validation errors returned by the backend are also displayed.
 
 Front-end validation does not replace backend validation.
 
@@ -564,51 +718,45 @@ Front-end validation does not replace backend validation.
 
 # Leave Request Workflow
 
-The Angular application operates the real leave request workflow implemented by the Spring Boot backend.
+The application contains a dedicated Leave Request workflow screen.
 
-The required workflow includes:
+The workflow operates the real status transitions implemented by Spring Boot.
+
+Supported Leave Request operations include:
 
 ```text
 Submit
-   ↓
-Approve / Reject
-   ↓
-Cancel when permitted
+Approve
+Reject
+Cancel
 ```
 
-Workflow operations include:
+The workflow screen displays:
 
-- Submit Leave Request
-- Approve Leave Request
-- Reject Leave Request
-- Cancel Leave Request
-
-The workflow page displays:
-
-- Current leave request
+- Current request
 - Current status
-- Available actions
-- Role-permitted actions
+- Available workflow actions
+- Actions permitted for the authenticated role
 
-Only valid actions for the current request state are shown.
+Only appropriate transitions are offered to the user.
 
-The application requests confirmation before executing workflow actions.
+Confirmation is requested before workflow operations where appropriate.
 
-After a successful workflow transition:
+After a successful operation:
 
-1. The backend updates the request.
-2. Angular reloads the request.
+1. The request is updated by Spring Boot.
+2. Angular refreshes the request.
 3. The new status is displayed.
 
-If the backend rejects an invalid transition, the application displays the message returned by the backend.
+If the backend rejects a transition, Angular displays the message returned by the backend.
 
-Workflow business rules remain implemented in Spring Boot.
+Workflow business rules remain server-side.
 
 ---
 
-# 2. Attendance
+# Attendance Module
 
-The Attendance module communicates with the backend attendance API.
+The Attendance module communicates with the Spring Boot Attendance API.
 
 Implemented functionality includes:
 
@@ -617,161 +765,137 @@ Implemented functionality includes:
 - View attendance by date
 - Check In
 - Check Out
-- Mark employee absent
+- Mark Absent
 - Delete attendance according to permissions
-- Role-based attendance access
+- Role-aware attendance access
 
-## Employee Attendance
+## EMPLOYEE Attendance
 
-EMPLOYEE users can access their permitted personal attendance information.
+EMPLOYEE users can access their permitted personal attendance data.
 
-Employees can perform:
+Permitted employee workflow actions include:
 
 ```text
 Check In
 Check Out
 ```
 
-according to backend business rules.
-
 ## HR / ADMIN Attendance
 
-Privileged users can:
+Privileged users can perform permitted attendance management actions such as:
 
 - View attendance records
-- View attendance by employee
-- View attendance by date
+- View records by employee
+- View records by date
 - Mark an employee absent
-- Perform other permitted attendance management actions
+- Perform permitted management/delete operations
+
+Authorization remains enforced by the backend.
 
 ---
 
-# 3. Employees
+# Employees Module
 
-The Employees module loads employee information from the backend.
+The Employees module loads employee information from the Spring Boot REST API.
 
 Implemented functionality includes:
 
 - Display employees
-- View employee data
-- Employee management for privileged users
-- Role-based access
+- Display employee number
+- Display employee full name
+- Display employee email
+- Display department
+- Display active status
+- Role-based employee management
 
-The Employees page is restricted to privileged roles.
+The Employees route is restricted to:
+
+```text
+HR
+ADMIN
+```
 
 ---
 
-# 4. Leave Types
+# Leave Types Module
 
-The Leave Types module loads leave type information from the backend.
+The Leave Types module loads Leave Type records from the backend.
 
 Implemented functionality includes:
 
-- Display leave types
-- Load leave types from the REST API
-- Use leave types in the Leave Request form
-- Manage leave types according to role permissions
+- Display Leave Types
+- Display Leave Type description
+- Display maximum days
+- Display active status
+- Use Leave Types in the Leave Request form
+- Role-based management where permitted
 
-Leave types are loaded dynamically from the backend and are not hardcoded in the Leave Request form.
-
----
-
-# Search, Filtering, Sorting and Pagination
-
-The Leave Requests page uses the backend paged endpoint.
-
-The page supports:
-
-## Search
-
-- Keyword search
-
-## Filters
-
-- Leave request status
-- Employee for privileged users
-
-## Sorting
-
-The list supports backend sorting on multiple columns.
-
-Selecting the same column changes the sorting direction between:
-
-```text
-ASC
-DESC
-```
-
-## Pagination
-
-The page supports:
-
-- Current page
-- Previous page
-- Next page
-- Total pages
-- Total records
-- Page size
-
-Page size options include:
-
-```text
-5
-10
-20
-```
-
-The page resets to the first page when:
-
-- A new keyword is entered
-- A filter changes
-- The page size changes
-
-A clear empty-state message is displayed when no records match the current search or filters.
+Leave Types are loaded dynamically from the API and are not hardcoded into the Leave Request form.
 
 ---
 
-# HTTP Services
+# Search Component
 
-The Angular application uses one service for each application module.
+The application includes a reusable Search component.
 
-Services use Angular `HttpClient` through dependency injection.
+It is used to perform keyword search against the backend list endpoint.
 
-Service methods return typed `Observable` values.
+Search criteria are sent through the Angular service layer.
 
-API query parameters are created using `HttpParams`.
+---
 
-Angular components do not call `HttpClient` directly.
+# Filter Menu Component
 
-The service layer handles communication between Angular components and the Spring Boot REST API.
+The application includes a reusable Filter Menu.
+
+The Leave Requests list supports at least two filter/search criteria:
+
+- Leave Request Status
+- Employee
+
+The Employee filter is displayed to privileged users.
+
+---
+
+# Service Layer and HttpClient
+
+The Angular application uses a service layer for backend communication.
+
+Services include functionality for modules such as:
+
+- Authentication
+- Leave Requests
+- Attendance
+- Employees
+- Leave Types
+- Dashboard/Reports
+
+Services use `HttpClient` through dependency injection.
+
+Methods return typed `Observable` values.
+
+Query parameters for search, filtering, sorting, and pagination are built using Angular HTTP parameter handling.
+
+Components do not call `HttpClient` directly.
 
 ---
 
 # HTTP Interceptor
 
-The application includes an HTTP interceptor.
+The application contains an HTTP interceptor.
 
-The interceptor automatically attaches the authorization header to API requests.
+The interceptor:
 
-This keeps authorization logic outside individual Angular components.
-
-The interceptor is registered in the Angular application configuration.
-
----
-
-# Error Handling
-
-The application handles errors returned by the Spring Boot backend.
-
-## 400 - Bad Request
-
-Backend field validation messages are displayed to the user.
-
-Validation errors are displayed with the corresponding form fields where applicable.
+- Retrieves the stored authentication token/information
+- Adds the authorization header to API requests
+- Handles authentication/authorization HTTP responses
 
 ## 401 - Unauthorized
 
-The authentication state is cleared and the user is redirected to:
+If the backend returns `401`:
+
+- Authentication state is cleared.
+- The user is redirected to:
 
 ```text
 /login
@@ -779,11 +903,31 @@ The authentication state is cleared and the user is redirected to:
 
 ## 403 - Forbidden
 
-The user is redirected to:
+If the backend returns `403`:
+
+- The user is redirected to:
 
 ```text
 /access-denied
 ```
+
+---
+
+# Error Handling
+
+Backend errors are displayed to the user where appropriate.
+
+## 400 - Bad Request
+
+Validation errors returned by the backend can be displayed under their corresponding form fields.
+
+## 401 - Unauthorized
+
+The user is logged out and redirected to Login.
+
+## 403 - Forbidden
+
+The user is redirected to Access Denied.
 
 ## 404 - Not Found
 
@@ -793,40 +937,45 @@ The record-not-found message returned by the backend is displayed.
 
 Business rule conflict messages returned by the backend are displayed.
 
-Examples include:
+Examples can include:
 
 - Invalid workflow transition
 - Duplicate data
 - Referenced records
-- Business rule violations
+- Other backend business rule conflicts
 
-Generic messages are used only when the backend does not provide a more specific message.
+Backend messages are preferred over replacing them with generic front-end business logic.
 
 ---
 
 # Loading States
 
-The application displays loading states while API requests are being processed.
+The application displays loading states while backend requests are in progress.
 
-The form submit button is disabled while a submission is in progress.
+Examples include:
 
-This prevents duplicate requests and provides feedback to the user.
+- Dashboard loading
+- Leave Request list loading
+- Leave Request detail loading
+- Form loading/submission
+
+The form submit button is disabled during submission.
 
 ---
 
 # Dashboard
 
-The application includes a role-aware Dashboard.
+The Dashboard is role-aware.
 
-Dashboard values are loaded from backend report endpoints.
+Aggregate totals are loaded from backend endpoints.
 
-Angular does not calculate the aggregate totals.
+Angular does not calculate backend report totals itself.
 
 ---
 
-## HR / ADMIN Dashboard
+# HR / ADMIN Dashboard
 
-Privileged users can view system-level summary information including:
+Privileged users can view:
 
 - Total Employees
 - Total Leave Requests
@@ -836,18 +985,16 @@ Privileged users can view system-level summary information including:
 - Rejected Leave Requests
 - Cancelled Leave Requests
 
-The dashboard also includes detailed reports such as:
+The privileged dashboard also displays detailed report data including:
 
 - Leave Status Report
 - Attendance by Employee Report
 
 ---
 
-## EMPLOYEE Dashboard
+# EMPLOYEE Dashboard
 
-Employees receive a personal dashboard summary.
-
-The personal summary includes information such as:
+EMPLOYEE users receive a personal summary including:
 
 - My Leave Requests
 - My Pending Requests
@@ -860,31 +1007,66 @@ The personal summary includes information such as:
 
 # Dashboard and Report Endpoints
 
-The Angular Dashboard Service consumes backend dashboard/report endpoints for:
+The Angular `DashboardService` consumes the following real Spring Boot endpoints.
 
-- Full System Summary
-- Personal Summary
-- Leave Status Report
-- Attendance by Employee Report
+## Full System Summary
 
-The dashboard therefore consumes more than the minimum two required report endpoints.
+```text
+GET http://localhost:8081/summary
+```
 
-All aggregate values are calculated by the Spring Boot backend using real MySQL data.
+Used for the privileged system dashboard.
 
 ---
 
-# Templates
+## Personal Summary
 
-Angular templates are used to:
+```text
+GET http://localhost:8081/dashboard/personal
+```
 
-- Render lists
-- Display conditional content
-- Display empty states
-- Show role-based actions
-- Show workflow actions
-- Display status badges
-- Display validation messages
-- Display loading states
+Used for the authenticated employee's personal dashboard.
+
+---
+
+## Leave Status Report
+
+```text
+GET http://localhost:8081/summary/leave-status
+```
+
+Returns Leave Request totals grouped by status.
+
+---
+
+## Attendance by Employee Report
+
+```text
+GET http://localhost:8081/summary/attendance-by-employee
+```
+
+Returns Attendance record counts grouped by employee.
+
+---
+
+The application therefore consumes more than the required minimum of two dashboard/report endpoints.
+
+All report values are calculated by the Spring Boot backend using MySQL data.
+
+---
+
+# Angular Templates
+
+The Angular templates use conditional and loop rendering to display:
+
+- Lists
+- Reports
+- Role-based content
+- Workflow actions
+- Validation messages
+- Loading states
+- Empty results
+- Status badges
 
 ---
 
@@ -892,216 +1074,277 @@ Angular templates are used to:
 
 The application uses Angular built-in pipes with parameters.
 
-Examples include:
+Examples include the Date pipe:
 
 ```html
 {{ request.startDate | date:'mediumDate' }}
 ```
 
-and:
+and the Number pipe:
 
 ```html
 {{ systemSummary.totalEmployees | number:'1.0-0' }}
 ```
 
-This satisfies the requirement to use at least two built-in pipes with parameters.
+Therefore, the application uses at least two built-in pipes with parameters.
 
 ---
 
 # Custom Pipe
 
-The application includes a custom status label pipe:
+The application includes:
 
 ```text
 StatusLabelPipe
 ```
 
-The custom pipe is used to present workflow statuses in a user-friendly format.
-
-It is used in the Leave Requests user interface.
+The custom pipe is used in the Leave Requests interface to display workflow status values in a user-friendly format.
 
 ---
 
 # Custom Attribute Directive
 
-The application includes a custom attribute directive:
+The application includes the custom attribute directive:
 
 ```text
 appHighlight
 ```
 
-The directive highlights Leave Request records based on a domain condition.
+It is used in the Leave Requests list to visually highlight records that meet a domain condition.
 
-For example, pending leave requests can be visually highlighted in the main Leave Requests list.
+For example, pending Leave Requests can be highlighted.
 
 ---
 
 # Class Binding
 
-Class binding is used to change the appearance of elements according to application data.
+Class binding is used to change styles according to application data.
 
-Examples include:
+Examples include status badges:
 
-- Leave request status badges
-- Workflow status presentation
-- Conditional record styling
+- Pending
+- Approved
+- Rejected
+- Cancelled
+
+Different CSS classes are applied according to Leave Request status.
 
 ---
 
 # Attribute Binding
 
-Angular attribute binding is used on native HTML attributes where required by the interface.
+The application uses Angular attribute binding on native HTML attributes.
 
-This allows native HTML element attributes to respond dynamically to component data.
+Examples include dynamic:
+
+- `aria-label`
+- `title`
+
+This satisfies the native attribute-binding requirement.
 
 ---
 
-# Styling and Responsive Design
+# Bootstrap and Custom CSS
 
-The user interface uses:
+Bootstrap CSS is installed and registered in the application.
 
-- Bootstrap CSS
-- Custom CSS
-- Responsive Bootstrap grid
-- Responsive tables
+The application also contains custom CSS for project-specific styling.
+
+The interface uses:
+
+- Bootstrap containers
+- Bootstrap grid
 - Cards
-- Status badges
-- Form styling
-- Class binding
-- Attribute binding
-
-Responsive styling is included so that the application remains usable on smaller screens.
+- Tables
+- Forms
+- Buttons
+- Badges
+- Responsive utilities
+- Custom CSS rules
 
 ---
 
-# Delete and Deactivation
+# Responsive Design
 
-Delete or management actions are displayed only when the current role is permitted to perform them.
+The application is designed to remain usable on smaller screens.
 
-Before a delete operation, the application asks the user for confirmation.
+Responsive functionality includes:
 
-Example:
+- Bootstrap responsive grid
+- Responsive cards
+- Responsive tables
+- Responsive navigation/layout
+- Custom responsive styling
+
+The application was tested in the browser using a responsive viewport of approximately:
 
 ```text
-Are you sure you want to delete this record?
+423 x 645
 ```
 
-After a successful delete operation, the displayed data is refreshed.
+The Dashboard and navigation remained usable at the smaller screen size.
 
-If the backend rejects deletion because the record is referenced by other data, the application displays the conflict message returned by the backend.
+---
 
-Backend authorization remains responsible for deciding whether the delete operation is permitted.
+# Delete and Deactivation Behaviour
+
+Delete actions are displayed according to role permissions.
+
+Delete functionality is available where permitted by the backend.
+
+Delete actions are available from the required Leave Request locations, including:
+
+- Main list row
+- Detail page
+
+Before deleting a record, the application asks for confirmation.
+
+After a successful operation, the displayed data is refreshed or navigation returns to the updated list.
+
+If the backend prevents deletion because a record is referenced or because of another business rule, the backend conflict/error message is displayed.
+
+The backend remains responsible for deciding whether deletion or deactivation is permitted.
 
 ---
 
 # Security
 
-Front-end guards and role-based visibility improve the user interface but are not the security layer.
+Front-end role checks are used to improve the user interface but are not considered the security layer.
 
 The Spring Boot backend remains responsible for:
 
 - Authentication
 - Authorization
 - Role validation
-- Ownership validation
+- Record ownership
 - Workflow validation
 - Business rules
 - Database validation
 
-Unauthorized operations are rejected by the backend even if a user attempts to call an API endpoint directly.
+A hidden button in Angular does not grant or remove backend permission.
+
+Unauthorized API operations are still rejected by Spring Boot.
 
 ---
 
 # Data Source
 
-The application does not use mock data as a replacement for the backend.
+The application uses real data from:
 
-Application data is retrieved from the existing Spring Boot REST API and MySQL database.
+```text
+Angular
+   ↓
+Spring Boot REST API
+   ↓
+MySQL
+```
 
-The Angular application does not create a new backend, new project topic, or replacement entities.
+The application does not replace backend data with:
+
+- Static arrays
+- Mock services
+- Hardcoded application records
+
+The Angular project does not introduce a new project topic, new backend, or replacement business entities.
 
 ---
 
 # Assumptions
 
-The application assumes that:
+The application assumes:
 
 - Podman is installed and running.
-- The Spring Boot container is running.
-- The MySQL container is running.
-- Both backend containers are on the correct Podman network.
-- The backend application is reachable on port `8081`.
-- The Angular development server runs on port `4200`.
-- CORS is configured to allow `http://localhost:4200`.
-- The required database users exist.
-- The demo users have the correct roles.
-- The backend contains the required API endpoints.
-- MySQL contains the data required for dashboard and application testing.
+- The MySQL container is configured.
+- The Spring Boot application container is configured.
+- Both containers are running.
+- Both containers are on the required Podman network.
+- Spring Boot can connect to MySQL.
+- The backend is reachable through port `8081`.
+- Angular runs on port `4200`.
+- CORS permits requests from `http://localhost:4200`.
+- The required database records exist.
+- The demo users exist with the documented roles.
+- Backend workflow and authorization endpoints are available.
 
 ---
 
 # Limitations
 
 - The Angular application requires the Spring Boot backend to be running.
-- The application requires a working MySQL database connection.
+- The Spring Boot backend requires the MySQL database.
 - Dashboard values depend on the records currently stored in MySQL.
-- Available actions depend on the authenticated user's backend role.
-- Workflow actions depend on the current leave request status.
+- Available buttons/actions depend on the logged-in user's role.
+- Workflow actions depend on the current Leave Request status.
 - The application expects the backend API at `http://localhost:8081`.
-- The application is designed to work with the existing Employee Leave and Attendance System backend.
+- The application is intended to operate with the existing Employee Leave and Attendance System backend.
 
 ---
 
 # Known Issues
 
-There are no known blocking issues in the submitted version.
+There are no known blocking compilation errors in the final checked Angular version.
 
-The Angular production build completes successfully.
+The production build completes successfully.
 
-A build budget warning may be displayed because the initial Angular bundle is larger than the configured warning budget. This warning does not prevent the application from compiling or running.
+The following Angular build warning may appear:
+
+```text
+bundle initial exceeded maximum budget
+```
+
+This is a build-size warning only.
+
+It does not prevent successful compilation or application execution.
 
 ---
 
-# Git and Submission
+# Git and Source Control
 
-The final project submission contains the complete Angular source code and the Spring Boot backend.
+The Angular project uses Git source control.
 
-The repository must contain:
+The submitted source should include:
 
-- Angular source code
-- Spring Boot backend
+- Complete Angular source code
 - README.md
 - Valid `.gitignore`
-- Meaningful Git commits
+- Meaningful commits
 
-Generated or unnecessary dependency folders are excluded.
+Generated/dependency folders are excluded.
 
-The Angular repository must not contain:
+The Angular source must not include:
 
 ```text
 node_modules/
 ```
 
-The following generated Angular folders should also remain excluded by `.gitignore`:
+The following generated Angular folders are also excluded:
 
 ```text
 dist/
 .angular/
 ```
 
-The Spring Boot generated build directory should not be submitted:
+IDE-generated folders such as:
+
+```text
+.idea/
+```
+
+are excluded from the submitted Angular source.
+
+For Spring Boot, the generated build directory:
 
 ```text
 target/
 ```
 
-IDE-generated folders such as `.idea` should also be excluded.
+is also excluded.
 
 ---
 
 # Production Build Verification
 
-Before final submission, the Angular application was checked using:
+The final Angular application was verified with:
 
 ```bash
 ng build
@@ -1109,100 +1352,13 @@ ng build
 
 The production build completed successfully without compilation errors.
 
----
-
-# Final Version Tag
-
-The final submitted version should be tagged:
+The generated output location is under:
 
 ```text
-v1.0.0
+dist/
 ```
 
-Example Git commands:
-
-```bash
-git tag v1.0.0
-git push origin v1.0.0
-```
-
----
-
-# Final Project Checklist
-
-- [x] Uses the existing Spring Boot backend and assigned Employee Leave and Attendance topic
-- [x] Spring Boot and MySQL run as separate Podman containers
-- [x] CORS supports the Angular development server
-- [x] API base URL is stored in Angular environment files
-- [x] TypeScript models are typed
-- [x] Paged response type is implemented
-- [x] Login is validated against the backend
-- [x] Authentication session survives browser refresh
-- [x] Logout is implemented
-- [x] Auth Guard is implemented
-- [x] Role Guard is implemented
-- [x] HTTP interceptor attaches authorization information
-- [x] HTTP error responses are handled
-- [x] Leave Requests main module is connected to the backend
-- [x] Create operation is implemented
-- [x] Read operation is implemented
-- [x] Update operation is implemented
-- [x] Delete/deactivation behavior is handled according to permissions
-- [x] Keyword search is implemented
-- [x] At least two filters are implemented
-- [x] Sorting is implemented
-- [x] Pagination is implemented
-- [x] Multiple page-size options are implemented
-- [x] Reactive Forms are used for create/update
-- [x] Custom form validation is implemented
-- [x] Backend validation messages are displayed
-- [x] Leave Request workflow is implemented
-- [x] Invalid workflow transitions are handled by the backend
-- [x] Attendance Check In is implemented
-- [x] Attendance Check Out is implemented
-- [x] Dashboard consumes backend report endpoints
-- [x] Dashboard is role-aware
-- [x] Custom pipe is implemented and used
-- [x] Custom attribute directive is implemented and used
-- [x] Built-in pipes with parameters are used
-- [x] Class binding is used
-- [x] Attribute binding is used
-- [x] Bootstrap and custom CSS are used
-- [x] Responsive design is implemented
-- [x] Access Denied page is implemented
-- [x] Page Not Found wildcard route is implemented
-- [x] README.md is included
-- [x] Demo users are documented
-- [x] Application routes and guards are documented
-- [x] Production build compiles without errors
-- [x] `node_modules` is excluded from Git
-- [x] Final version is prepared for `v1.0.0`
-
----
-
-# Important Testing Order
-
-To run the complete project:
-
-```text
-1. Start Podman
-        ↓
-2. Start MySQL container
-        ↓
-3. Start Spring Boot container
-        ↓
-4. Verify backend on http://localhost:8081
-        ↓
-5. Open Angular project
-        ↓
-6. Run npm install if dependencies are not installed
-        ↓
-7. Run ng serve
-        ↓
-8. Open http://localhost:4200
-        ↓
-9. Login using one of the demo accounts
-```
+The bundle-budget warning does not prevent a successful build.
 
 ---
 
@@ -1224,6 +1380,34 @@ Password: employee123
 
 ---
 
+# Important Testing Order
+
+To run the complete system:
+
+```text
+1. Start Podman
+        ↓
+2. Start the MySQL container
+        ↓
+3. Start the Spring Boot container
+        ↓
+4. Verify the backend on http://localhost:8081
+        ↓
+5. Open the Angular project
+        ↓
+6. Run npm install if dependencies are not already installed
+        ↓
+7. Run ng serve
+        ↓
+8. Open http://localhost:4200
+        ↓
+9. Login using a demo account
+        ↓
+10. Test features according to the selected role
+```
+
+---
+
 # Project URLs
 
 ## Angular Front End
@@ -1237,6 +1421,172 @@ http://localhost:4200
 ```text
 http://localhost:8081
 ```
+
+## Spring Boot Repository
+
+```text
+https://github.com/athoobj/employee-leave-attendance-system.git
+```
+
+## Final Project Repository
+
+```text
+https://github.com/athoobj/employee-leave-attendance-final-project
+```
+
+## Full System Summary
+
+```text
+http://localhost:8081/summary
+```
+
+## Personal Dashboard Summary
+
+```text
+http://localhost:8081/dashboard/personal
+```
+
+## Leave Status Report
+
+```text
+http://localhost:8081/summary/leave-status
+```
+
+## Attendance by Employee Report
+
+```text
+http://localhost:8081/summary/attendance-by-employee
+```
+
+---
+
+# Final Submission Requirements
+
+Before submission:
+
+1. Make sure the final Angular source code is saved.
+2. Make sure the final Spring Boot backend is available.
+3. Make sure MySQL and Spring Boot run using Podman.
+4. Confirm CORS allows the Angular origin.
+5. Confirm `environment.apiBaseUrl` points to `http://localhost:8081`.
+6. Confirm `node_modules` is not submitted.
+7. Confirm generated Angular build/cache directories are excluded.
+8. Confirm Spring Boot `target` is excluded.
+9. Run:
+
+```bash
+ng build
+```
+
+10. Confirm there are no compilation errors.
+11. Test login with ADMIN.
+12. Test login with HR.
+13. Test login with EMPLOYEE.
+14. Test session persistence after browser refresh.
+15. Test Logout.
+16. Test role guards.
+17. Test Access Denied.
+18. Test Leave Requests.
+19. Test Create.
+20. Test Read/Detail.
+21. Test Update.
+22. Test permitted Delete.
+23. Test keyword Search.
+24. Test Status filter.
+25. Test Employee filter.
+26. Test Sorting.
+27. Test Pagination.
+28. Test page-size options.
+29. Test workflow Submit.
+30. Test workflow Approve.
+31. Test workflow Reject.
+32. Test workflow Cancel.
+33. Test Check In.
+34. Test Check Out.
+35. Test Attendance.
+36. Test Employees.
+37. Test Leave Types.
+38. Test Dashboard as a privileged user.
+39. Test Dashboard as EMPLOYEE.
+40. Test responsive/small-screen layout.
+41. Confirm README.md is included.
+42. Confirm the Spring Boot repository link is included.
+43. Commit the final version.
+44. Tag the final submitted version as:
+
+```text
+v1.0.0
+```
+
+45. Verify the final GitHub repository before submitting its link.
+
+---
+
+# Final Version Tag
+
+The final submitted Git version must be tagged:
+
+```text
+v1.0.0
+```
+
+The tag should be created only after the final source code and README have been committed.
+
+Example commands:
+
+```bash
+git tag v1.0.0
+git push origin v1.0.0
+```
+
+---
+
+# Final Project Requirement Coverage
+
+The final application covers:
+
+- Existing assigned backend and topic
+- Spring Boot and MySQL with Podman
+- Angular routing
+- Environment API configuration
+- Typed TypeScript models
+- Generic paged response
+- Authentication
+- Session persistence
+- Logout
+- Role-based access
+- Route Guards
+- HTTP Interceptor
+- Error handling
+- Main Leave Request CRUD
+- Search
+- At least two filters
+- Sorting
+- Pagination
+- Reactive Forms
+- Custom validation
+- Backend validation messages
+- Leave Request workflow
+- Attendance Check In
+- Attendance Check Out
+- Dashboard summary endpoints
+- Detailed report data
+- Role-aware Dashboard
+- Built-in pipes with parameters
+- Custom pipe
+- Custom directive
+- Class binding
+- Attribute binding
+- Bootstrap
+- Custom CSS
+- Responsive design
+- Access Denied
+- Page Not Found
+- Production build
+- README documentation
+- Spring Boot repository link
+
+The final submitted repository must also contain the required `v1.0.0` tag.
 
 ---
 
